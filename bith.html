@@ -1,0 +1,93 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="style.css">
+  </head>
+
+  <body>
+    <div class="title">
+      <h1>Datas de aniversários</h1>
+    </div>
+
+    <form class="form-date">
+      <label>Nome Completo</label>
+      <input type="text" name="fullname" autocomplete="off"min="3" maxlength="120" required/>
+      <label>Data de Nascimento</label>
+      <input type="date" name="bithdate" required/>
+      <button>Send</button>
+    </form>
+    
+
+    <ul class="list-date">
+ 
+    </ul>
+
+
+    <script>
+      const people = {
+        bith:[
+        {
+          id: Date.now(),
+          name: "david",
+          bithdate: "",
+        }
+        ],
+
+        readDate(){
+          people.bith.forEach(({id,name, bithdate})=>{
+            people.createDate({id,name: name, bithdate: bithdate}, true)
+          })
+        },
+
+        createDate(data, htmlOnly = false){
+          const idTemp = Date.now()
+          if(!htmlOnly){
+            people.bith.push({
+              id: data.id || idTemp,
+              name: data.name,
+              bithdate: data.bithdate,
+            })
+          }
+          const list = document.querySelector('.list-date')
+          list.insertAdjacentHTML('afterbegin', `<li data-id="${idTemp}"> nome: ${data.name} e 
+          seu aniversário: ${data.bithdate} <button class="btn">X</button>`)
+        },
+
+        apagaDate(id){
+          const listaUpdating = people.bith.filter((postsId)=>{
+            return postsId.id !== Number(id);
+          })
+          people.bith = listaUpdating;
+        }
+      }
+
+      //lendo todas as datas
+      people.readDate();
+
+      const $form = document.querySelector('.form-date')
+      const aniver = $form.querySelector('input[name="bithdate"]')
+      const send = $form.querySelector('input[name="fullname"]')
+
+      $form.addEventListener('submit', function(e){
+        e.preventDefault()
+        
+        if(send.value.length < 3){
+          alert("Nome incompleto! tente digitar o nome corretamente..")
+        }else{
+          people.createDate({name: send.value, bithdate: aniver.value})
+        }
+      })
+
+      //apaga as data de aniversários
+      document.querySelector('.list-date').addEventListener('click', (dados)=>{
+        const current = dados.target;
+        const element = dados.target.classList.contains('btn')
+        if(element){
+          const id = current.parentNode.getAttribute('data-id')
+          people.apagaDate(id);
+          current.parentNode.remove();
+        }
+      })
+ 
+    </script>
+  </body>
+</html>
